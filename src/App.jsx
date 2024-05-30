@@ -6,7 +6,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  useDroppable
+  useDroppable,
+  rectIntersection
 } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -82,7 +83,7 @@ export default function App() {
   }
 
   function handleDragOver(event) {
-    if (event.over.id === 'trash') {
+    if (event.over?.id === 'trash') {
       const newItemsTemp = items.filter((item) => item !== event.active.id)
       setItemsTemp(newItemsTemp)
     } else {
@@ -96,7 +97,7 @@ export default function App() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={rectIntersection}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
