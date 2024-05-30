@@ -5,7 +5,8 @@ import {
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors
+  useSensors,
+  useDroppable
 } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -25,6 +26,25 @@ export default function App() {
     })
   )
 
+  function TrashDroppable(props) {
+    const { isOver, setNodeRef } = useDroppable({
+      id: props.id
+    })
+    const style = {
+      backgroundColor: isOver ? 'red' : undefined
+    }
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="border border-black w-64 h-20"
+      >
+        {props.children}
+      </div>
+    )
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -38,11 +58,16 @@ export default function App() {
           ))}
         </SortableContext>
       </div>
+      <TrashDroppable id="trash">Trash</TrashDroppable>
     </DndContext>
   )
 
   function handleDragEnd(event) {
     const { active, over } = event
+    if (over.id === 'trash') {
+      setItems((items) => items.filter((item) => item !== active.id))
+      return
+    }
 
     if (active.id !== over.id) {
       setItems((items) => {
