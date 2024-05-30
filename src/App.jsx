@@ -19,6 +19,7 @@ import { SortableItem } from './SortableItem'
 
 export default function App() {
   const [items, setItems] = useState([1, 2, 3])
+  const [itemsTemp, setItemsTemp] = useState([])
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -26,6 +27,23 @@ export default function App() {
     })
   )
   const itemsData = items.join(',')
+  const itemsTempData = itemsTemp.join(',')
+
+  function Items() {
+    if (itemsTemp.length === 0) {
+      return items.map((id) => <SortableItem key={id} id={id} />)
+    } else {
+      return itemsTemp.map((id) => <SortableItem key={id} id={id} />)
+    }
+  }
+
+  function Blank() {
+    if (itemsTemp.length === 0) {
+      return null
+    } else {
+      return <div className="min-h-7"></div>
+    }
+  }
 
   function TrashDroppable(props) {
     const { isOver, setNodeRef } = useDroppable({
@@ -46,28 +64,11 @@ export default function App() {
     )
   }
 
-  return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <div>{'itemsData: ' + itemsData}</div>
-      <div className="max-w-sm p-3 border border-black">
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          {items.map((id) => (
-            <SortableItem key={id} id={id} />
-          ))}
-        </SortableContext>
-      </div>
-      <TrashDroppable id="trash">Trash</TrashDroppable>
-    </DndContext>
-  )
-
   function handleDragEnd(event) {
     const { active, over } = event
     if (over.id === 'trash') {
       setItems((items) => items.filter((item) => item !== active.id))
+      setItemsTemp([])
       return
     }
 
@@ -75,9 +76,39 @@ export default function App() {
       setItems((items) => {
         const oldIndex = items.indexOf(active.id)
         const newIndex = items.indexOf(over.id)
-
         return arrayMove(items, oldIndex, newIndex)
       })
     }
   }
+
+  function handleDragOver(event) {
+    if (event.over.id === 'trash') {
+      const newItemsTemp = items.filter((item) => item !== event.active.id)
+      setItemsTemp(newItemsTemp)
+    } else {
+      if (itemsTemp.length === 0) {
+        return
+      }
+      setItemsTemp([])
+    }
+  }
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+    >
+      <div>{'itemsData: ' + itemsData}</div>
+      <div>{'itemsTempData: ' + itemsTempData}</div>
+      <div className="max-w-sm p-3 border border-black">
+        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+          <Items />
+          <Blank />
+        </SortableContext>
+      </div>
+      <TrashDroppable id="trash">Trash</TrashDroppable>
+    </DndContext>
+  )
 }

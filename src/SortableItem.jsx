@@ -16,7 +16,7 @@ export function SortableItem(props) {
       style={style}
       {...attributes}
       {...listeners}
-      className="border border-black"
+      className="border border-black min-h-7"
     >
       test {props.id}
     </div>
