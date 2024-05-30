@@ -6,13 +6,20 @@ export function Draggable(props) {
   })
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        backgroundColor: 'red'
       }
     : undefined
 
   return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className="border border-black w-20"
+    >
       {props.children}
-    </button>
+    </div>
   )
 }
