@@ -16,6 +16,7 @@ export default function App() {
   )
 
   function handleDragEnd(event) {
+    console.log(event)
     if (event.over && event.over.id === 'droppable') {
       setIsDropped(true)
     }
