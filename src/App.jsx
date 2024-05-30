@@ -25,6 +25,7 @@ export default function App() {
       coordinateGetter: sortableKeyboardCoordinates
     })
   )
+  const itemsData = items.join(',')
 
   function TrashDroppable(props) {
     const { isOver, setNodeRef } = useDroppable({
@@ -51,6 +52,7 @@ export default function App() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
+      <div>{'itemsData: ' + itemsData}</div>
       <div className="max-w-sm p-3 border border-black">
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
           {items.map((id) => (
