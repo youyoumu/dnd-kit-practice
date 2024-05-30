@@ -9,7 +9,11 @@ export function Droppable(props) {
   }
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="border border-black w-64 h-64"
+    >
       {props.children}
     </div>
   )
